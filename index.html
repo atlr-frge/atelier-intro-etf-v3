@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Atelier Superintelligence diagnoses fragmented AI deployments and builds coherent, compounding systems for enterprise.">
+  <title>Atelier Superintelligence — Map the Corpse</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* === DESIGN TOKENS === */
+    :root {
+      --bg: #0A0A0A;
+      --bg-card: #111111;
+      --bg-lifted: #161616;
+      --ember: #E85D04;
+      --ember-glow: #F48C06;
+      --ember-dim: rgba(232,93,4,0.09);
+      --ember-border: rgba(232,93,4,0.28);
+      --text: #FAFAFA;
+      --text-sec: #A0A0A0;
+      --text-dim: #555555;
+      --border: #222222;
+      --seam: #3a3a3a;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+      --max-w: 1080px;
+      --pad-x: clamp(1.5rem, 5vw, 5rem);
+    }
+
+    /* === RESET === */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* === LAYOUT === */
+    .inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .label {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 1.25rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-wrap: balance;
+    }
+    .section-sub {
+      font-size: 1rem;
+      color: var(--text-sec);
+      max-width: 480px;
+      margin-top: 1rem;
+      line-height: 1.7;
+    }
+    .section-dark { padding: 7rem 0; background: var(--bg); }
+    .section-lifted { padding: 7rem 0; background: var(--bg-lifted); }
+
+    /* === NAV === */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 var(--pad-x); height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: transparent;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim);
+    }
+    .nav-logo span { color: var(--text-sec); }
+    .nav-right { display: flex; align-items: center; gap: 2rem; }
+    .nav-links { display: flex; gap: 1.75rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.82rem; color: var(--text-sec);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      font-size: 0.8rem; font-weight: 500;
+      background: var(--ember); color: #fff;
+      padding: 0.45rem 1rem; border-radius: 4px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-cta:hover { background: var(--ember-glow); transform: translateY(-1px); }
+
+    /* === HERO === */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; overflow: hidden;
+      padding: 0 var(--pad-x);
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse at 25% 35%, rgba(232,93,4,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse at 70% 70%, rgba(232,93,4,0.04) 0%, transparent 50%);
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      max-width: var(--max-w); width: 100%;
+      display: flex; flex-direction: column; align-items: flex-start;
+      padding-top: 60px; margin: 0 auto;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.4rem, 7.5vw, 6.8rem);
+      font-weight: 300; line-height: 1.02;
+      letter-spacing: -0.03em; color: var(--text);
+      margin-bottom: 1.5rem; text-wrap: balance;
+    }
+    .hero-title em { font-style: italic; color: var(--ember); }
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      color: var(--text-sec); max-width: 540px;
+      line-height: 1.7; margin-bottom: 2.5rem;
+    }
+    .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      font-size: 0.88rem; font-weight: 500;
+      background: var(--ember); color: #fff;
+      padding: 0.7rem 1.5rem; border-radius: 4px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--ember-glow); transform: translateY(-1px); }
+    .btn-ghost {
+      font-size: 0.88rem; font-weight: 400; color: var(--text-sec);
+      padding: 0.7rem 1.5rem; border-radius: 4px;
+      border: 1px solid var(--border);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--seam); }
+
+    /* === CSS CORPSE FIGURE === */
+    .corpse-figure {
+      position: absolute; right: clamp(3rem, 10vw, 12rem);
+      top: 50%; transform: translateY(-50%);
+      width: 180px; display: flex; flex-direction: column;
+      align-items: center; pointer-events: none;
+    }
+    .corpse-head-shape {
+      width: 88px; height: 108px;
+      border: 1.5px solid var(--ember);
+      border-radius: 50% 50% 40% 40% / 55% 55% 45% 45%;
+      margin: 0 auto; margin-left: 50px; /* deliberately off-center */
+      opacity: 0; transform: translateX(-40px) translateY(-25px);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .corpse-fold {
+      width: 100%; border-top: 1px dashed var(--seam); margin: 7px 0;
+      opacity: 0; transition: opacity 0.35s ease;
+    }
+    .corpse-torso-shape {
+      width: 118px; height: 128px;
+      border: 1.5px solid var(--ember); border-radius: 8px 14px 6px 10px;
+      margin: 0 auto; margin-right: 40px; /* opposite offset */
+      opacity: 0; transform: translateX(45px) translateY(18px);
+      transition: opacity 0.6s 0.42s cubic-bezier(0.16,1,0.3,1), transform 0.6s 0.42s cubic-bezier(0.16,1,0.3,1);
+    }
+    .corpse-legs-wrap {
+      display: flex; gap: 12px; justify-content: center;
+      margin-left: -25px; /* off-center from torso */
+      opacity: 0; transform: translateX(-30px) translateY(28px);
+      transition: opacity 0.6s 0.84s cubic-bezier(0.16,1,0.3,1), transform 0.6s 0.84s cubic-bezier(0.16,1,0.3,1);
+    }
+    .corpse-leg {
+      width: 38px; height: 96px;
+      border: 1.5px solid var(--ember);
+      border-radius: 4px 4px 20px 20px;
+    }
+    .corpse-leg:last-child { transform: rotate(7deg); margin-top: 10px; }
+    /* Assembled: segments land in place but still misaligned to each other */
+    .corpse-figure.assembled .corpse-head-shape { opacity: 0.55; transform: translateX(0) translateY(0); }
+    .corpse-figure.assembled .corpse-fold { opacity: 0.6; }
+    .corpse-figure.assembled .corpse-torso-shape { opacity: 0.55; transform: translateX(0) translateY(0); }
+    .corpse-figure.assembled .corpse-legs-wrap { opacity: 0.55; transform: translateX(0) translateY(0); }
+
+    /* === DIAGNOSIS === */
+    .diag-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+      font-weight: 300; line-height: 1.2;
+      letter-spacing: -0.02em; margin-bottom: 3.5rem; max-width: 700px;
+    }
+    .diag-line {
+      display: block; opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .diag-line .dept { color: var(--ember); transition: color 0.8s ease; }
+    .diag-line.visible { opacity: 1; transform: translateY(0); }
+    .diag-line.faded .dept { color: var(--text-sec); }
+
+    .diag-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; margin-bottom: 3.5rem; }
+    .diag-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 6px; overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .diag-card:hover { border-color: var(--ember-border); transform: scaleY(1.015); }
+    .diag-segment-art {
+      height: 80px; display: flex; align-items: center; justify-content: center;
+      padding: 1rem; background: var(--bg);
+    }
+    .art-head {
+      width: 42px; height: 54px;
+      border: 1.5px solid rgba(232,93,4,0.45);
+      border-radius: 50% 50% 40% 40% / 55% 55% 45% 45%;
+    }
+    .art-torso {
+      width: 58px; height: 46px;
+      border: 1.5px solid rgba(232,93,4,0.45);
+      border-radius: 6px 10px 4px 8px;
+    }
+    .art-legs { display: flex; gap: 6px; }
+    .art-leg {
+      width: 18px; height: 46px;
+      border: 1.5px solid rgba(232,93,4,0.45);
+      border-radius: 3px 3px 12px 12px;
+    }
+    .art-leg:last-child { transform: rotate(5deg); margin-top: 4px; }
+    .diag-fold-line {
+      width: 100%; border-top: 1px dashed var(--seam);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .diag-card:hover .diag-fold-line {
+      border-color: var(--ember);
+      box-shadow: 0 0 8px rgba(232,93,4,0.35);
+    }
+    .diag-card-body { padding: 1.25rem; }
+    .diag-dept {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--ember); margin-bottom: 0.3rem;
+    }
+    .diag-tool {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      color: var(--text-dim); margin-bottom: 0.65rem;
+    }
+    .diag-desc { font-size: 0.88rem; color: var(--text-sec); line-height: 1.55; }
+    .diag-quote {
+      font-family: var(--font-display); font-style: italic;
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      color: var(--ember); text-align: center; font-weight: 300;
+    }
+
+    /* === SYSTEM / GLOSSARY === */
+    .amplifier-list { list-style: none; margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .amplifier-list li {
+      padding-left: 1.25rem; border-left: 2px solid var(--border);
+      font-size: 0.92rem; color: var(--text-sec); line-height: 1.65;
+    }
+    .amplifier-list li strong {
+      display: block; font-size: 0.75rem; font-family: var(--font-mono);
+      font-weight: 400; letter-spacing: 0.08em; color: var(--text);
+      margin-bottom: 0.2rem; text-transform: uppercase;
+    }
+    .glossary-stack { display: flex; flex-direction: column; gap: 1rem; }
+    .gloss-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-left: 3px solid var(--border); border-radius: 4px;
+      padding: 1.1rem 1.25rem;
+      transition: border-left-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .gloss-card:hover {
+      border-left-color: var(--ember);
+      box-shadow: -4px 0 0 var(--ember), 0 6px 24px rgba(232,93,4,0.08);
+      transform: translateX(3px);
+    }
+    .gloss-term {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--ember); margin-bottom: 0.3rem;
+    }
+    .gloss-def { font-size: 0.88rem; color: var(--text-sec); line-height: 1.55; }
+
+    /* === THE JOINT === */
+    .joint-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 3.4rem);
+      font-weight: 300; line-height: 1.15; letter-spacing: -0.02em;
+      text-align: center; max-width: 680px; margin: 0 auto 4rem;
+    }
+    .joint-headline em { font-style: italic; color: var(--ember); }
+    .joint-viz { max-width: 460px; margin: 0 auto 4.5rem; }
+    .joint-segment {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.25rem 1.5rem;
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), border-color 0.45s ease;
+    }
+    .joint-gap { height: 28px; display: flex; align-items: center; }
+    .joint-line {
+      height: 2px; background: var(--ember); width: 0; border-radius: 2px;
+      box-shadow: 0 0 12px rgba(232,93,4,0.6);
+      transition: width 0.85s cubic-bezier(0.16,1,0.3,1);
+    }
+    .joint-viz.drawing .joint-line { width: 100%; }
+    .joint-viz.aligned .joint-segment.top { border-color: var(--ember-border); transform: translateY(3px); }
+    .joint-viz.aligned .joint-segment.bottom { border-color: var(--ember-border); transform: translateY(-3px); }
+
+    .joint-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+    .joint-card {
+      padding: 1.75rem 1.5rem; background: var(--bg-card);
+      border-top: 2px solid var(--ember); border-radius: 0 0 6px 6px;
+      border-left: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+    .joint-card-title {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--ember); margin-bottom: 0.65rem;
+    }
+    .joint-card-desc { font-size: 0.9rem; color: var(--text-sec); line-height: 1.6; }
+
+    /* === METHOD === */
+    .method-section { padding: 7rem 0; background: var(--bg); }
+    .method-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad-x); }
+    .method-header { margin-bottom: 4rem; }
+    .method-body { display: grid; grid-template-columns: 48px 1fr; gap: 0; }
+    .method-rail {
+      position: relative; display: flex;
+      flex-direction: column; align-items: center;
+    }
+    .rail-line {
+      position: absolute; top: 6px; bottom: 6px;
+      left: 50%; transform: translateX(-50%);
+      width: 1px; background: var(--border);
+    }
+    .rail-node {
+      width: 12px; height: 12px; border-radius: 50%;
+      border: 2px solid var(--border); background: var(--bg);
+      position: relative; z-index: 1; flex-shrink: 0;
+      transition: border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+    }
+    .rail-node.lit {
+      border-color: var(--ember); background: var(--ember);
+      box-shadow: 0 0 16px rgba(232,93,4,0.55);
+    }
+    .rail-spacer { flex: 1; }
+    .method-phases { display: flex; flex-direction: column; }
+    .phase-block {
+      padding: 2.5rem 0 2.5rem 2.5rem;
+      border-left: 1px solid var(--border);
+      min-height: 240px; display: flex; flex-direction: column; justify-content: center;
+      transition: border-left-color 0.35s ease;
+    }
+    .phase-block.lit { border-left-color: var(--ember); }
+    .phase-num {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ember); margin-bottom: 0.5rem;
+    }
+    .phase-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 400; letter-spacing: -0.02em; line-height: 1.1;
+      color: var(--text); margin-bottom: 0.65rem;
+    }
+    .phase-sub {
+      font-size: 0.95rem; color: var(--text-sec);
+      margin-bottom: 1.25rem; max-width: 560px; line-height: 1.65;
+    }
+    .phase-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .phase-bullets li {
+      font-size: 0.88rem; color: var(--text-dim);
+      padding-left: 1.1rem; position: relative; line-height: 1.55;
+    }
+    .phase-bullets li::before {
+      content: '—'; position: absolute; left: 0;
+      color: var(--ember); font-size: 0.75rem;
+    }
+
+    /* === CENTAUR === */
+    .centaur-section { display: flex; flex-direction: column; }
+    .centaur-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 70vh; }
+    .centaur-half {
+      padding: 7rem var(--pad-x);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .centaur-left { background: #0f0808; border-right: 2px dashed var(--seam); }
+    .centaur-right { background: #0d0c09; }
+    .centaur-label {
+      font-family: var(--font-mono); font-size: 0.58rem;
+      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
+    }
+    .centaur-left .centaur-label { color: #6a3a3a; }
+    .centaur-right .centaur-label { color: var(--ember); }
+    .centaur-headline {
+      font-family: var(--font-display);
+      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
+      font-weight: 300; letter-spacing: -0.02em;
+      line-height: 1.1; margin-bottom: 2rem;
+    }
+    .centaur-left .centaur-headline { color: #5a4040; }
+    .centaur-right .centaur-headline { color: var(--text); }
+    .centaur-items { display: flex; flex-direction: column; gap: 0.75rem; }
+    .centaur-item {
+      font-size: 0.9rem; font-family: var(--font-mono);
+      letter-spacing: 0.04em; padding: 0.6rem 0;
+      border-bottom: 1px solid transparent;
+    }
+    .centaur-left .centaur-item { color: #5a4040; border-bottom-color: #1a1010; }
+    .centaur-right .centaur-item { color: var(--text-sec); border-bottom-color: var(--border); }
+
+    /* Centaur entry animations */
+    .centaur-left .centaur-label,
+    .centaur-left .centaur-headline,
+    .centaur-left .centaur-item {
+      opacity: 0; transform: translateX(-22px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .centaur-right .centaur-label,
+    .centaur-right .centaur-headline,
+    .centaur-right .centaur-item {
+      opacity: 0; transform: translateX(22px);
+      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+    }
+    .centaur-section.revealed .centaur-left .centaur-label  { opacity:1; transform:none; transition-delay:0ms; }
+    .centaur-section.revealed .centaur-left .centaur-headline{ opacity:1; transform:none; transition-delay:80ms; }
+    .centaur-section.revealed .centaur-left .centaur-item:nth-child(1){ opacity:1; transform:none; transition-delay:160ms; }
+    .centaur-section.revealed .centaur-left .centaur-item:nth-child(2){ opacity:1; transform:none; transition-delay:220ms; }
+    .centaur-section.revealed .centaur-left .centaur-item:nth-child(3){ opacity:1; transform:none; transition-delay:280ms; }
+    .centaur-section.revealed .centaur-right .centaur-label  { opacity:1; transform:none; transition-delay:120ms; }
+    .centaur-section.revealed .centaur-right .centaur-headline{ opacity:1; transform:none; transition-delay:200ms; }
+    .centaur-section.revealed .centaur-right .centaur-item:nth-child(1){ opacity:1; transform:none; transition-delay:280ms; }
+    .centaur-section.revealed .centaur-right .centaur-item:nth-child(2){ opacity:1; transform:none; transition-delay:340ms; }
+    .centaur-section.revealed .centaur-right .centaur-item:nth-child(3){ opacity:1; transform:none; transition-delay:400ms; }
+
+    .centaur-payoff {
+      padding: 3.5rem var(--pad-x); text-align: center;
+      background: var(--bg); border-top: 1px solid var(--border);
+    }
+    .centaur-payoff-text {
+      font-family: var(--font-display); font-style: italic;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      color: var(--ember); font-weight: 300;
+    }
+
+    /* === TEAM === */
+    .bio-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 6px; overflow: hidden;
+      display: flex; align-items: flex-start; gap: 1.25rem;
+      padding: 1.5rem; margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+    .bio-card:hover { border-color: var(--ember-border); }
+    .bio-accent { width: 3px; align-self: stretch; background: var(--ember); border-radius: 2px; flex-shrink: 0; }
+    .bio-headshot { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; flex-shrink: 0; filter: grayscale(15%); }
+    .bio-info { flex: 1; }
+    .bio-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 500; color: var(--text); margin-bottom: 0.15rem; }
+    .bio-role { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--ember); margin-bottom: 0.65rem; }
+    .bio-text { font-size: 0.85rem; color: var(--text-sec); line-height: 1.6; }
+
+    /* === CLOSE === */
+    .close-section {
+      background: var(--ember); padding: 7rem var(--pad-x);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .close-label {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.55); margin-bottom: 1.5rem;
+    }
+    .close-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 300; line-height: 1.1; letter-spacing: -0.02em;
+      color: #fff; margin-bottom: 1.5rem; text-wrap: balance;
+    }
+    .close-sub {
+      font-size: 1rem; color: rgba(255,255,255,0.72);
+      max-width: 520px; margin-bottom: 3rem; line-height: 1.7;
+    }
+    .close-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 3.5rem; }
+    .btn-dark {
+      font-size: 0.88rem; font-weight: 500;
+      background: rgba(0,0,0,0.85); color: #fff;
+      padding: 0.75rem 1.75rem; border-radius: 4px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-dark:hover { background: #000; transform: translateY(-1px); }
+    .close-email {
+      font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em;
+      color: rgba(255,255,255,0.75); padding: 0.75rem 1.75rem;
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 4px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .close-email:hover { border-color: rgba(255,255,255,0.7); color: #fff; }
+    .close-phases { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 2.5rem; width: 100%; display: flex; justify-content: center; }
+    .close-phase-row { display: flex; gap: 0; }
+    .close-phase { text-align: center; padding: 0 2.5rem; border-right: 1px solid rgba(255,255,255,0.2); }
+    .close-phase:last-child { border-right: none; }
+    .close-phase-num { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 0.25rem; }
+    .close-phase-name { font-family: var(--font-display); font-size: 1.2rem; color: #fff; font-weight: 400; }
+    .close-phase-time { font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-top: 0.2rem; }
+
+    /* === FOOTER === */
+    .footer {
+      background: var(--bg); border-top: 1px solid var(--border);
+      padding: 1.5rem var(--pad-x);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); }
+    .footer-copy { font-size: 0.75rem; color: var(--text-dim); }
+    .footer-domain { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; color: var(--text-dim); }
+
+    /* === SCROLL ANIMATIONS === */
+    .reveal {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .stagger-children .card-child {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    }
+    .stagger-children.visible .card-child:nth-child(1) { opacity:1; transform:none; transition-delay:0ms; }
+    .stagger-children.visible .card-child:nth-child(2) { opacity:1; transform:none; transition-delay:80ms; }
+    .stagger-children.visible .card-child:nth-child(3) { opacity:1; transform:none; transition-delay:160ms; }
+    .stagger-children.visible .card-child:nth-child(4) { opacity:1; transform:none; transition-delay:240ms; }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 900px) {
+      .two-col { grid-template-columns: 1fr; gap: 2.5rem; }
+      .diag-cards { grid-template-columns: 1fr; }
+      .joint-cards { grid-template-columns: 1fr; }
+      .centaur-split { grid-template-columns: 1fr; }
+      .centaur-left { border-right: none; border-bottom: 2px dashed var(--seam); }
+      .method-body { grid-template-columns: 1fr; }
+      .method-rail { display: none; }
+      .phase-block { border-left: 2px solid var(--ember); padding-left: 1.5rem; }
+      .nav-links { display: none; }
+      .corpse-figure { display: none; }
+      .close-phase-row { flex-direction: column; }
+      .close-phase { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.2); padding: 0 0 1.5rem; }
+      .close-phase:last-child { border-bottom: none; padding-bottom: 0; }
+      .footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+
+    /* === REDUCED MOTION === */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .stagger-children .card-child, .diag-line,
+      .corpse-head-shape, .corpse-torso-shape, .corpse-legs-wrap, .corpse-fold,
+      .centaur-left .centaur-label, .centaur-left .centaur-headline, .centaur-left .centaur-item,
+      .centaur-right .centaur-label, .centaur-right .centaur-headline, .centaur-right .centaur-item,
+      .joint-line, .joint-segment, .phase-block {
+        opacity: 1 !important; transform: none !important; transition: none !important;
+      }
+      .joint-line { width: 100% !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-logo"><span>ATLR</span> / SUPERINTELLIGENCE</div>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#diagnosis">Diagnosis</a></li>
+      <li><a href="#method">Method</a></li>
+      <li><a href="#joint">The Joint</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Map the Corpse &rarr;</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-inner">
+    <span class="label reveal">A diagnostic for fragmented AI</span>
+    <h1 class="hero-title reveal">
+      You are running an<br>
+      <em>exquisite corpse.</em>
+    </h1>
+    <p class="hero-sub reveal">
+      One person draws the head, folds the paper, passes it on.
+      The next draws a torso without seeing the head. The next draws legs.
+      You unfold it and you have a chicken&#8209;truck&#8209;avocado.
+      That&rsquo;s how your AI is deployed right now.
+    </p>
+    <div class="hero-ctas reveal">
+      <a href="#contact" class="btn-primary">Map the Corpse &rarr;</a>
+      <a href="#diagnosis" class="btn-ghost">See the diagnosis &darr;</a>
+    </div>
+  </div>
+
+  <!-- CSS Corpse Figure — assembled on load, permanently misaligned -->
+  <div class="corpse-figure" id="corpse-figure" aria-hidden="true">
+    <div class="corpse-head-shape"></div>
+    <div class="corpse-fold"></div>
+    <div class="corpse-torso-shape"></div>
+    <div class="corpse-fold"></div>
+    <div class="corpse-legs-wrap">
+      <div class="corpse-leg"></div>
+      <div class="corpse-leg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- DIAGNOSIS -->
+<section class="section-dark" id="diagnosis">
+  <div class="inner">
+    <span class="label reveal">The condition</span>
+    <h2 class="diag-headline" id="diag-headline">
+      <span class="diag-line"><span class="dept">Finance</span> drew the head.</span>
+      <span class="diag-line"><span class="dept">Creative</span> drew the torso.</span>
+      <span class="diag-line"><span class="dept">Operations</span> drew the legs.</span>
+      <span class="diag-line">Nobody saw what came before.</span>
+    </h2>
+
+    <div class="diag-cards stagger-children">
+      <div class="diag-card card-child">
+        <div class="diag-segment-art"><div class="art-head"></div></div>
+        <div class="diag-fold-line"></div>
+        <div class="diag-card-body">
+          <div class="diag-dept">Finance</div>
+          <div class="diag-tool">Replit / custom scripts</div>
+          <p class="diag-desc">Solving compliance and reporting. Nothing they build reaches anyone else. No shared output format, no shared memory.</p>
+        </div>
+      </div>
+      <div class="diag-card card-child">
+        <div class="diag-segment-art"><div class="art-torso"></div></div>
+        <div class="diag-fold-line"></div>
+        <div class="diag-card-body">
+          <div class="diag-dept">Creative</div>
+          <div class="diag-tool">Google AI Studio / Midjourney</div>
+          <p class="diag-desc">Generating. No connection to what Finance approved or what Operations is automating. Different context, different outputs.</p>
+        </div>
+      </div>
+      <div class="diag-card card-child">
+        <div class="diag-segment-art">
+          <div class="art-legs"><div class="art-leg"></div><div class="art-leg"></div></div>
+        </div>
+        <div class="diag-fold-line"></div>
+        <div class="diag-card-body">
+          <div class="diag-dept">Operations</div>
+          <div class="diag-tool">Microsoft Copilot</div>
+          <p class="diag-desc">Automating. Doesn&rsquo;t know what Finance built or what Creative generated. Every session starts from scratch.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="diag-quote reveal">&ldquo;The AI doesn&rsquo;t know what the AI is doing.&rdquo;</p>
+  </div>
+</section>
+
+<!-- SYSTEM — Why it gets worse + Glossary -->
+<section class="section-lifted" id="system">
+  <div class="inner">
+    <div class="two-col">
+      <div>
+        <span class="label reveal">Why this compounds</span>
+        <h2 class="section-title reveal">Shadow AI.<br>Lock&#8209;in.<br>Amnesia at every session.</h2>
+        <ul class="amplifier-list reveal">
+          <li>
+            <strong>Shadow AI is back</strong>
+            People who can&rsquo;t use ChatGPT on corporate hardware are bringing personal laptops. The data governance situation is worse than BYOD was in 2012, and nobody has a policy for it yet.
+          </li>
+          <li>
+            <strong>Every tool starts from scratch</strong>
+            Copilot doesn&rsquo;t know what Replit built. The AI your marketing team uses doesn&rsquo;t know what your product team shipped. No shared memory layer. Every agent starts with amnesia.
+          </li>
+          <li>
+            <strong>Speed creates lock&#8209;in before strategy can catch up</strong>
+            Teams that moved fast picked tools. Tools became workflows. Workflows became dependencies. By the time anyone asks &ldquo;should we do this differently&rdquo; — the answer is yes, but it&rsquo;ll cost you.
+          </li>
+          <li>
+            <strong>The vendors are incentivized to keep it fragmented</strong>
+            Microsoft wants you all&#8209;in on Copilot. Google wants Workspace AI. Salesforce wants Einstein. None of them want you building something portable. The exquisite corpse is their business model.
+          </li>
+        </ul>
+      </div>
+      <div>
+        <span class="label reveal">The vocabulary</span>
+        <div class="glossary-stack stagger-children">
+          <div class="gloss-card card-child">
+            <div class="gloss-term">Exquisite Corpse</div>
+            <div class="gloss-def">Fragmented AI deployment with no shared context between systems. What most organizations are running right now.</div>
+          </div>
+          <div class="gloss-card card-child">
+            <div class="gloss-term">Amnesia Deployment</div>
+            <div class="gloss-def">Any AI tool with no persistent memory or shared context. Starts from scratch every session. The default state of enterprise AI.</div>
+          </div>
+          <div class="gloss-card card-child">
+            <div class="gloss-term">Shadow AI</div>
+            <div class="gloss-def">Unsanctioned AI tool use inside an organization — personal accounts, personal devices. Worse than BYOD was in 2012.</div>
+          </div>
+          <div class="gloss-card card-child">
+            <div class="gloss-term">Compounding System</div>
+            <div class="gloss-def">A deployment where each interaction makes the system smarter, vs. one that resets to zero each session. What we build.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE JOINT -->
+<section class="section-dark" id="joint">
+  <div class="inner">
+    <span class="label reveal" style="display:block;text-align:center">The fix</span>
+    <h2 class="joint-headline reveal">
+      The failure mode isn&rsquo;t the tools.<br>
+      It&rsquo;s the absence of anything<br>
+      <em>connecting</em> them.
+    </h2>
+
+    <div class="joint-viz reveal" id="joint-viz">
+      <div class="joint-segment top">Finance &nbsp;&middot;&nbsp; Replit &nbsp;&middot;&nbsp; no shared output</div>
+      <div class="joint-gap">
+        <div class="joint-line" id="joint-line"></div>
+      </div>
+      <div class="joint-segment bottom">Operations &nbsp;&middot;&nbsp; Copilot &nbsp;&middot;&nbsp; no shared memory</div>
+    </div>
+
+    <div class="joint-cards stagger-children">
+      <div class="joint-card card-child">
+        <div class="joint-card-title">Knowledge Backbone</div>
+        <p class="joint-card-desc">A shared, agent-readable knowledge base that every system can reference. Markdown-native, git-backed. The institutional memory layer that doesn&rsquo;t exist yet in most organizations.</p>
+      </div>
+      <div class="joint-card card-child">
+        <div class="joint-card-title">Context Model</div>
+        <p class="joint-card-desc">A common format for what your organization knows, how it&rsquo;s organized, and how agents access it. Not a platform. A format. Portable, not locked.</p>
+      </div>
+      <div class="joint-card card-child">
+        <div class="joint-card-title">Integration Bridges</div>
+        <p class="joint-card-desc">MCP servers and API layers that let new agentic systems talk to legacy infrastructure — CRMs, ERPs, databases — without replacing anything.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- METHOD -->
+<section class="method-section" id="method">
+  <div class="method-inner">
+    <div class="method-header">
+      <span class="label reveal">The approach</span>
+      <h2 class="section-title reveal">Map. Design. Deploy.</h2>
+      <p class="section-sub reveal">Three phases. Each one builds on the last. Month six is smarter than month one because everything the system has learned is retained — not thrown away at the end of each session.</p>
+    </div>
+    <div class="method-body">
+      <div class="method-rail" aria-hidden="true">
+        <div class="rail-line"></div>
+        <div class="rail-node" id="node-1"></div>
+        <div class="rail-spacer"></div>
+        <div class="rail-node" id="node-2"></div>
+        <div class="rail-spacer"></div>
+        <div class="rail-node" id="node-3"></div>
+      </div>
+      <div class="method-phases">
+        <div class="phase-block reveal" id="phase-1">
+          <div class="phase-num">Phase 01</div>
+          <div class="phase-title">Map the Corpse</div>
+          <p class="phase-sub">Before we build anything, we figure out what you already have. Most organizations have never seen this picture. It&rsquo;s uncomfortable. It&rsquo;s also necessary.</p>
+          <ul class="phase-bullets">
+            <li>Inventory every AI tool in use — sanctioned and shadow</li>
+            <li>Map what data goes in, what comes out, where it touches</li>
+            <li>Identify what&rsquo;s compliant, what&rsquo;s exposed, what&rsquo;s invisible</li>
+            <li>Find where you&rsquo;re paying for the same capability five times</li>
+          </ul>
+        </div>
+        <div class="phase-block reveal" id="phase-2">
+          <div class="phase-num">Phase 02</div>
+          <div class="phase-title">Design the Joints</div>
+          <p class="phase-sub">The failure mode in fragmented AI isn&rsquo;t the tools. It&rsquo;s the absence of anything connecting them. We build the connective tissue your organization is missing.</p>
+          <ul class="phase-bullets">
+            <li>A shared knowledge backbone — structured, agent-readable, git-backed</li>
+            <li>A unified context model — how your organization&rsquo;s knowledge is organized and accessed</li>
+            <li>Integration bridges — lightweight connectors via MCP servers or API layers</li>
+            <li>Governance — who can access what, what data leaves the building, what gets logged</li>
+          </ul>
+        </div>
+        <div class="phase-block reveal" id="phase-3">
+          <div class="phase-num">Phase 03</div>
+          <div class="phase-title">Deploy Intentionally</div>
+          <p class="phase-sub">We don&rsquo;t sell AI transformation. We deliver working systems against specific, measurable problems. Start narrow, prove the results, then expand.</p>
+          <ul class="phase-bullets">
+            <li>One high-value workflow — manual, repetitive, and knowledge-intensive</li>
+            <li>Build the system, prove the results, then expand</li>
+            <li>Each deployment feeds the knowledge backbone</li>
+            <li>Month six is smarter than month one — by design, not accident</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- THE CENTAUR -->
+<div class="centaur-section" id="centaur">
+  <div class="centaur-split">
+    <div class="centaur-half centaur-left">
+      <div class="centaur-label">The Exquisite Corpse</div>
+      <div class="centaur-headline">Chicken&#8209;truck&#8209;avocado.</div>
+      <div class="centaur-items">
+        <div class="centaur-item">Amnesia deployment</div>
+        <div class="centaur-item">Fragmented context</div>
+        <div class="centaur-item">Accidental chimera</div>
+      </div>
+    </div>
+    <div class="centaur-half centaur-right">
+      <div class="centaur-label">The Centaur</div>
+      <div class="centaur-headline">Intentionally designed.</div>
+      <div class="centaur-items">
+        <div class="centaur-item">Compounding system</div>
+        <div class="centaur-item">Knowledge backbone</div>
+        <div class="centaur-item">Planned hybrid</div>
+      </div>
+    </div>
+  </div>
+  <div class="centaur-payoff">
+    <p class="centaur-payoff-text reveal">&ldquo;The centaur beats the chicken&#8209;truck&#8209;avocado every time. And the centaur was planned.&rdquo;</p>
+  </div>
+</div>
+
+<!-- TEAM -->
+<section class="section-lifted" id="team">
+  <div class="inner">
+    <div class="two-col">
+      <div>
+        <span class="label reveal">The team</span>
+        <h2 class="section-title reveal">We know the difference between an accident<br>and a design.</h2>
+        <p class="section-sub reveal">Not advisors. Builders who have shipped at scale, exited companies, and run AI at enterprise depth. We&rsquo;ve seen the corpse from the inside. We know how to build the centaur.</p>
+        <div style="margin-top:2.25rem" class="reveal">
+          <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim)">Combined experience</div>
+          <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--ember);font-weight:300;margin-top:0.2rem;line-height:1">58 years</div>
+          <div style="font-size:0.82rem;color:var(--text-dim);margin-top:0.25rem">at the edge of production systems, enterprise AI, and emerging technology</div>
+        </div>
+      </div>
+      <div class="stagger-children">
+        <div class="bio-card card-child">
+          <div class="bio-accent"></div>
+          <img src="../atelier-intro-etf-v2/images/sean-evans.jpg" alt="Sean Evans" class="bio-headshot" width="64" height="64" loading="lazy">
+          <div class="bio-info">
+            <div class="bio-name">Sean Evans</div>
+            <div class="bio-role">Co-Founder &amp; CTO</div>
+            <p class="bio-text">28 years building production systems across broadcast, animation, VR, and immersive media. Co-founded Occupied VR, 1188 Films, and Holy City VR. SIGGRAPH presenter. CTO at EVOQ.</p>
+          </div>
+        </div>
+        <div class="bio-card card-child">
+          <div class="bio-accent"></div>
+          <img src="../atelier-intro-etf-v2/images/michael-chase.jpg" alt="Michael Chase" class="bio-headshot" width="64" height="64" loading="lazy">
+          <div class="bio-info">
+            <div class="bio-name">Michael Chase</div>
+            <div class="bio-role">Co-Founder &amp; CEO</div>
+            <p class="bio-text">30 years at the edge of emerging technology. Built and exited 7 companies including TRAVAI (acquired by Kognitiv). Ran Deloitte&rsquo;s Novel &amp; Exponential Tech group. Forbes Top 100 CMO. MIT.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<div class="close-section" id="contact">
+  <span class="close-label">Let&rsquo;s build something coherent</span>
+  <h2 class="close-headline">Don&rsquo;t build another<br>chicken&#8209;truck&#8209;avocado.</h2>
+  <p class="close-sub">We map what you have. We design the joints. We deploy against specific problems and prove the results. Then we stay and make it compound.</p>
+  <div class="close-ctas">
+    <a href="mailto:hello@atlr.pro" class="btn-dark">Schedule a Diagnostic &rarr;</a>
+    <a href="mailto:hello@atlr.pro" class="close-email">hello@atlr.pro</a>
+  </div>
+  <div class="close-phases">
+    <div class="close-phase-row">
+      <div class="close-phase">
+        <div class="close-phase-num">Phase 01</div>
+        <div class="close-phase-name">Map</div>
+        <div class="close-phase-time">2–4 weeks</div>
+      </div>
+      <div class="close-phase">
+        <div class="close-phase-num">Phase 02</div>
+        <div class="close-phase-name">Design</div>
+        <div class="close-phase-time">Scoped engagement</div>
+      </div>
+      <div class="close-phase">
+        <div class="close-phase-num">Phase 03</div>
+        <div class="close-phase-name">Deploy</div>
+        <div class="close-phase-time">Compound monthly</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">ATLR / SUPERINTELLIGENCE</div>
+  <div class="footer-copy">&copy; 2026 Atelier Superintelligence</div>
+  <div class="footer-domain">atlr.pro</div>
+</footer>
+
+<script>
+  // === NAV SCROLL ===
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  // === HERO CORPSE ASSEMBLY ===
+  document.addEventListener('DOMContentLoaded', () => {
+    const fig = document.getElementById('corpse-figure');
+    if (fig) setTimeout(() => fig.classList.add('assembled'), 450);
+  });
+
+  // === GENERAL SCROLL REVEAL ===
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal, .stagger-children').forEach(el => revealObs.observe(el));
+
+  // === DIAGNOSIS LINE STAGGER ===
+  const diagEl = document.getElementById('diag-headline');
+  if (diagEl) {
+    const diagLines = diagEl.querySelectorAll('.diag-line');
+    const diagObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          diagLines.forEach((line, i) => {
+            setTimeout(() => {
+              line.classList.add('visible');
+              setTimeout(() => line.classList.add('faded'), 800);
+            }, i * 130);
+          });
+          diagObs.disconnect();
+        }
+      });
+    }, { threshold: 0.25 });
+    diagObs.observe(diagEl);
+  }
+
+  // === JOINT DRAW ANIMATION ===
+  const jointViz = document.getElementById('joint-viz');
+  if (jointViz) {
+    const jointObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          jointViz.classList.add('drawing');
+          setTimeout(() => jointViz.classList.add('aligned'), 950);
+          jointObs.disconnect();
+        }
+      });
+    }, { threshold: 0.55 });
+    jointObs.observe(jointViz);
+  }
+
+  // === METHOD RAIL ILLUMINATION ===
+  [['phase-1','node-1'],['phase-2','node-2'],['phase-3','node-3']].forEach(([pid, nid]) => {
+    const ph = document.getElementById(pid);
+    const nd = document.getElementById(nid);
+    if (!ph || !nd) return;
+    new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        nd.classList.toggle('lit', e.isIntersecting);
+        ph.classList.toggle('lit', e.isIntersecting);
+      });
+    }, { threshold: 0.4 }).observe(ph);
+  });
+
+  // === CENTAUR SPLIT ENTRY ===
+  const centaurSection = document.querySelector('.centaur-section');
+  if (centaurSection) {
+    new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          centaurSection.classList.add('revealed');
+        }
+      });
+    }, { threshold: 0.2 }).observe(centaurSection);
+  }
+</script>
+</body>
+</html>

@@ -157,49 +157,21 @@
     }
     .btn-ghost:hover { color: var(--text); border-color: var(--seam); }
 
-    /* === CSS CORPSE FIGURE === */
+    /* === CORPSE FIGURE IMAGE === */
     .corpse-figure {
-      position: absolute; right: clamp(3rem, 10vw, 12rem);
+      position: absolute; right: clamp(2rem, 8vw, 10rem);
       top: 50%; transform: translateY(-50%);
-      width: 180px; display: flex; flex-direction: column;
-      align-items: center; pointer-events: none;
+      width: clamp(220px, 22vw, 340px);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s cubic-bezier(0.16,1,0.3,1);
     }
-    .corpse-head-shape {
-      width: 88px; height: 108px;
-      border: 1.5px solid var(--ember);
-      border-radius: 50% 50% 40% 40% / 55% 55% 45% 45%;
-      margin: 0 auto; margin-left: 50px; /* deliberately off-center */
-      opacity: 0; transform: translateX(-40px) translateY(-25px);
-      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1);
+    .corpse-figure.assembled { opacity: 0.22; }
+    .corpse-figure img {
+      width: 100%; height: auto; display: block;
+      mix-blend-mode: screen;
+      filter: saturate(0.7) brightness(0.85);
     }
-    .corpse-fold {
-      width: 100%; border-top: 1px dashed var(--seam); margin: 7px 0;
-      opacity: 0; transition: opacity 0.35s ease;
-    }
-    .corpse-torso-shape {
-      width: 118px; height: 128px;
-      border: 1.5px solid var(--ember); border-radius: 8px 14px 6px 10px;
-      margin: 0 auto; margin-right: 40px; /* opposite offset */
-      opacity: 0; transform: translateX(45px) translateY(18px);
-      transition: opacity 0.6s 0.42s cubic-bezier(0.16,1,0.3,1), transform 0.6s 0.42s cubic-bezier(0.16,1,0.3,1);
-    }
-    .corpse-legs-wrap {
-      display: flex; gap: 12px; justify-content: center;
-      margin-left: -25px; /* off-center from torso */
-      opacity: 0; transform: translateX(-30px) translateY(28px);
-      transition: opacity 0.6s 0.84s cubic-bezier(0.16,1,0.3,1), transform 0.6s 0.84s cubic-bezier(0.16,1,0.3,1);
-    }
-    .corpse-leg {
-      width: 38px; height: 96px;
-      border: 1.5px solid var(--ember);
-      border-radius: 4px 4px 20px 20px;
-    }
-    .corpse-leg:last-child { transform: rotate(7deg); margin-top: 10px; }
-    /* Assembled: segments land in place but still misaligned to each other */
-    .corpse-figure.assembled .corpse-head-shape { opacity: 0.55; transform: translateX(0) translateY(0); }
-    .corpse-figure.assembled .corpse-fold { opacity: 0.6; }
-    .corpse-figure.assembled .corpse-torso-shape { opacity: 0.55; transform: translateX(0) translateY(0); }
-    .corpse-figure.assembled .corpse-legs-wrap { opacity: 0.55; transform: translateX(0) translateY(0); }
 
     /* === DIAGNOSIS === */
     .diag-headline {
@@ -300,6 +272,11 @@
     .gloss-def { font-size: 0.88rem; color: var(--text-sec); line-height: 1.55; }
 
     /* === THE JOINT === */
+    .joint-hero-img {
+      display: block; max-width: 760px; width: 100%; margin: 0 auto 3rem;
+      border-radius: 8px; opacity: 0.75;
+      filter: saturate(0.8) brightness(0.9);
+    }
     .joint-headline {
       font-family: var(--font-display);
       font-size: clamp(2.2rem, 4vw, 3.4rem);
@@ -404,7 +381,17 @@
       display: flex; flex-direction: column; justify-content: center;
     }
     .centaur-left { background: #0f0808; border-right: 2px dashed var(--seam); }
-    .centaur-right { background: #0d0c09; }
+    .centaur-right {
+      background: #0d0c09;
+      position: relative; overflow: hidden;
+    }
+    .centaur-bg-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center top;
+      opacity: 0.18; mix-blend-mode: screen;
+      filter: saturate(0.5) brightness(0.9);
+      pointer-events: none;
+    }
     .centaur-label {
       font-family: var(--font-mono); font-size: 0.58rem;
       letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
@@ -613,16 +600,9 @@
     </div>
   </div>
 
-  <!-- CSS Corpse Figure — assembled on load, permanently misaligned -->
+  <!-- Corpse Figure — generated image, fades in on load -->
   <div class="corpse-figure" id="corpse-figure" aria-hidden="true">
-    <div class="corpse-head-shape"></div>
-    <div class="corpse-fold"></div>
-    <div class="corpse-torso-shape"></div>
-    <div class="corpse-fold"></div>
-    <div class="corpse-legs-wrap">
-      <div class="corpse-leg"></div>
-      <div class="corpse-leg"></div>
-    </div>
+    <img src="images/corpse-figure.png" alt="" width="340" height="453" loading="eager">
   </div>
 </section>
 
@@ -727,6 +707,7 @@
 <!-- THE JOINT -->
 <section class="section-dark" id="joint">
   <div class="inner">
+    <img src="images/joint.png" alt="Two systems connecting" class="joint-hero-img reveal" loading="lazy">
     <span class="label reveal" style="display:block;text-align:center">The fix</span>
     <h2 class="joint-headline reveal">
       The failure mode isn&rsquo;t the tools.<br>
@@ -828,6 +809,7 @@
       </div>
     </div>
     <div class="centaur-half centaur-right">
+      <img src="images/centaur.png" alt="" class="centaur-bg-img" loading="lazy" aria-hidden="true">
       <div class="centaur-label">The Centaur</div>
       <div class="centaur-headline">Intentionally designed.</div>
       <div class="centaur-items">

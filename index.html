@@ -166,11 +166,11 @@
       opacity: 0;
       transition: opacity 1s cubic-bezier(0.16,1,0.3,1);
     }
-    .corpse-figure.assembled { opacity: 0.22; }
+    .corpse-figure.assembled { opacity: 0.35; }
     .corpse-figure img {
       width: 100%; height: auto; display: block;
-      mix-blend-mode: screen;
-      filter: saturate(0.7) brightness(0.85);
+      mix-blend-mode: luminosity;
+      filter: brightness(0.75) contrast(1.1);
     }
 
     /* === DIAGNOSIS === */
@@ -273,9 +273,9 @@
 
     /* === THE JOINT === */
     .joint-hero-img {
-      display: block; max-width: 760px; width: 100%; margin: 0 auto 3rem;
-      border-radius: 8px; opacity: 0.75;
-      filter: saturate(0.8) brightness(0.9);
+      display: block; max-width: 680px; width: 100%; margin: 0 auto 3.5rem;
+      border-radius: 6px; opacity: 0.9;
+      filter: brightness(0.95) contrast(1.05);
     }
     .joint-headline {
       font-family: var(--font-display);
@@ -388,8 +388,8 @@
     .centaur-bg-img {
       position: absolute; inset: 0; width: 100%; height: 100%;
       object-fit: cover; object-position: center top;
-      opacity: 0.18; mix-blend-mode: screen;
-      filter: saturate(0.5) brightness(0.9);
+      opacity: 0.28; mix-blend-mode: luminosity;
+      filter: brightness(0.65) contrast(1.05) saturate(0.4);
       pointer-events: none;
     }
     .centaur-label {

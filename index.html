@@ -161,7 +161,7 @@
     .corpse-figure {
       position: absolute; right: clamp(1rem, 6vw, 7rem);
       top: 50%; transform: translateY(-50%);
-      width: clamp(280px, 30vw, 460px);
+      width: clamp(300px, 34vw, 520px);
       pointer-events: none;
       opacity: 0;
       transition: opacity 1s cubic-bezier(0.16,1,0.3,1);
@@ -170,6 +170,7 @@
     .corpse-figure img {
       width: 100%; height: auto; display: block;
       mix-blend-mode: screen;
+      filter: invert(1);
     }
 
     /* === DIAGNOSIS === */
@@ -597,7 +598,7 @@
 
   <!-- Corpse Figure — generated image, fades in on load -->
   <div class="corpse-figure" id="corpse-figure" aria-hidden="true">
-    <img src="images/corpse-figure.png" alt="" width="340" height="453" loading="eager">
+    <img src="images/corpse-figure.jpg" alt="" loading="eager">
   </div>
 </section>
 

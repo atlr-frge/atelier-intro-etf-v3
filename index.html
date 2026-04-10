@@ -159,18 +159,17 @@
 
     /* === CORPSE FIGURE IMAGE === */
     .corpse-figure {
-      position: absolute; right: clamp(2rem, 8vw, 10rem);
+      position: absolute; right: clamp(1rem, 6vw, 7rem);
       top: 50%; transform: translateY(-50%);
-      width: clamp(220px, 22vw, 340px);
+      width: clamp(280px, 30vw, 460px);
       pointer-events: none;
       opacity: 0;
       transition: opacity 1s cubic-bezier(0.16,1,0.3,1);
     }
-    .corpse-figure.assembled { opacity: 0.72; }
+    .corpse-figure.assembled { opacity: 1; }
     .corpse-figure img {
       width: 100%; height: auto; display: block;
-      mix-blend-mode: normal;
-      filter: brightness(0.88) contrast(1.05);
+      mix-blend-mode: screen;
     }
 
     /* === DIAGNOSIS === */
@@ -370,75 +369,73 @@
     }
 
     /* === CENTAUR === */
-    .centaur-section { display: flex; flex-direction: column; }
-    .centaur-split { display: grid; grid-template-columns: 1fr 1fr; min-height: 70vh; }
-    .centaur-half {
-      padding: 7rem var(--pad-x);
-      display: flex; flex-direction: column; justify-content: center;
+    .centaur-section {
+      position: relative; background: var(--bg);
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; overflow: hidden;
+      padding: 7rem 0 0;
     }
-    .centaur-left { background: #0f0808; border-right: 2px dashed var(--seam); }
-    .centaur-right {
-      background: #0d0c09;
-      overflow: hidden;
-      justify-content: flex-start;
-      padding-bottom: 0;
+    .centaur-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      padding: 0 var(--pad-x);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
     }
-    .centaur-bg-img {
-      display: block; width: 100%; margin-top: auto;
-      height: 300px; object-fit: cover; object-position: center 25%;
-      opacity: 0.7; flex-shrink: 0;
-      filter: brightness(0.65) contrast(1.15) saturate(0.3);
+    /* Text column */
+    .centaur-text { position: relative; z-index: 1; }
+    .centaur-vs-block { margin-bottom: 2.5rem; }
+    .centaur-vs-label {
+      font-family: var(--font-mono); font-size: 0.6rem;
+      letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.6rem;
     }
-    .centaur-label {
-      font-family: var(--font-mono); font-size: 0.58rem;
-      letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem;
-    }
-    .centaur-left .centaur-label { color: #6a3a3a; }
-    .centaur-right .centaur-label { color: var(--ember); }
-    .centaur-headline {
+    .centaur-vs-label.dim { color: #5a3a3a; }
+    .centaur-vs-label.lit { color: var(--ember); }
+    .centaur-vs-title {
       font-family: var(--font-display);
-      font-size: clamp(1.9rem, 3.5vw, 2.8rem);
-      font-weight: 300; letter-spacing: -0.02em;
-      line-height: 1.1; margin-bottom: 2rem;
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 300; letter-spacing: -0.02em; line-height: 1.1;
+      margin-bottom: 1.25rem;
     }
-    .centaur-left .centaur-headline { color: #5a4040; }
-    .centaur-right .centaur-headline { color: var(--text); }
-    .centaur-items { display: flex; flex-direction: column; gap: 0.75rem; }
-    .centaur-item {
-      font-size: 0.9rem; font-family: var(--font-mono);
-      letter-spacing: 0.04em; padding: 0.6rem 0;
-      border-bottom: 1px solid transparent;
+    .centaur-vs-title.dim { color: #4a3535; }
+    .centaur-vs-title.lit { color: var(--text); }
+    .centaur-vs-items { display: flex; flex-direction: column; gap: 0; }
+    .centaur-vs-item {
+      font-family: var(--font-mono); font-size: 0.82rem;
+      letter-spacing: 0.04em; padding: 0.55rem 0;
+      border-bottom: 1px solid;
     }
-    .centaur-left .centaur-item { color: #5a4040; border-bottom-color: #1a1010; }
-    .centaur-right .centaur-item { color: var(--text-sec); border-bottom-color: var(--border); }
-
-    /* Centaur entry animations */
-    .centaur-left .centaur-label,
-    .centaur-left .centaur-headline,
-    .centaur-left .centaur-item {
-      opacity: 0; transform: translateX(-22px);
+    .centaur-vs-item.dim { color: #4a3535; border-bottom-color: #1c1010; }
+    .centaur-vs-item.lit { color: var(--text-sec); border-bottom-color: var(--border); }
+    .centaur-fold-divider {
+      width: 100%; border-top: 1px dashed var(--seam); margin: 2.5rem 0;
+    }
+    /* Image column — same treatment as hero corpse */
+    .centaur-img-col {
+      position: relative; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .centaur-img-col img {
+      width: clamp(280px, 36vw, 520px); height: auto; display: block;
+      mix-blend-mode: screen;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
+    }
+    .centaur-section.revealed .centaur-img-col img {
+      opacity: 1; transform: translateY(0);
+      transition-delay: 200ms;
+    }
+    /* Text reveal */
+    .centaur-text .reveal-item {
+      opacity: 0; transform: translateY(16px);
       transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     }
-    .centaur-right .centaur-label,
-    .centaur-right .centaur-headline,
-    .centaur-right .centaur-item {
-      opacity: 0; transform: translateX(22px);
-      transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-    }
-    .centaur-section.revealed .centaur-left .centaur-label  { opacity:1; transform:none; transition-delay:0ms; }
-    .centaur-section.revealed .centaur-left .centaur-headline{ opacity:1; transform:none; transition-delay:80ms; }
-    .centaur-section.revealed .centaur-left .centaur-item:nth-child(1){ opacity:1; transform:none; transition-delay:160ms; }
-    .centaur-section.revealed .centaur-left .centaur-item:nth-child(2){ opacity:1; transform:none; transition-delay:220ms; }
-    .centaur-section.revealed .centaur-left .centaur-item:nth-child(3){ opacity:1; transform:none; transition-delay:280ms; }
-    .centaur-section.revealed .centaur-right .centaur-label  { opacity:1; transform:none; transition-delay:120ms; }
-    .centaur-section.revealed .centaur-right .centaur-headline{ opacity:1; transform:none; transition-delay:200ms; }
-    .centaur-section.revealed .centaur-right .centaur-item:nth-child(1){ opacity:1; transform:none; transition-delay:280ms; }
-    .centaur-section.revealed .centaur-right .centaur-item:nth-child(2){ opacity:1; transform:none; transition-delay:340ms; }
-    .centaur-section.revealed .centaur-right .centaur-item:nth-child(3){ opacity:1; transform:none; transition-delay:400ms; }
-
+    .centaur-section.revealed .centaur-text .reveal-item:nth-child(1){ opacity:1; transform:none; transition-delay:0ms; }
+    .centaur-section.revealed .centaur-text .reveal-item:nth-child(2){ opacity:1; transform:none; transition-delay:80ms; }
+    .centaur-section.revealed .centaur-text .reveal-item:nth-child(3){ opacity:1; transform:none; transition-delay:160ms; }
+    .centaur-section.revealed .centaur-text .reveal-item:nth-child(4){ opacity:1; transform:none; transition-delay:240ms; }
     .centaur-payoff {
       padding: 3.5rem var(--pad-x); text-align: center;
-      background: var(--bg); border-top: 1px solid var(--border);
+      border-top: 1px solid var(--border); margin-top: 6rem;
     }
     .centaur-payoff-text {
       font-family: var(--font-display); font-style: italic;
@@ -535,8 +532,9 @@
       .two-col { grid-template-columns: 1fr; gap: 2.5rem; }
       .diag-cards { grid-template-columns: 1fr; }
       .joint-cards { grid-template-columns: 1fr; }
-      .centaur-split { grid-template-columns: 1fr; }
-      .centaur-left { border-right: none; border-bottom: 2px dashed var(--seam); }
+      .centaur-inner { grid-template-columns: 1fr; }
+      .centaur-img-col { justify-content: flex-start; }
+      .centaur-img-col img { width: clamp(200px, 60vw, 340px); }
       .method-body { grid-template-columns: 1fr; }
       .method-rail { display: none; }
       .phase-block { border-left: 2px solid var(--ember); padding-left: 1.5rem; }
@@ -794,32 +792,37 @@
 </section>
 
 <!-- THE CENTAUR -->
-<div class="centaur-section" id="centaur">
-  <div class="centaur-split">
-    <div class="centaur-half centaur-left">
-      <div class="centaur-label">The Exquisite Corpse</div>
-      <div class="centaur-headline">Chicken&#8209;truck&#8209;avocado.</div>
-      <div class="centaur-items">
-        <div class="centaur-item">Amnesia deployment</div>
-        <div class="centaur-item">Fragmented context</div>
-        <div class="centaur-item">Accidental chimera</div>
+<section class="centaur-section" id="centaur">
+  <div class="centaur-inner">
+    <div class="centaur-text">
+      <div class="centaur-vs-block reveal-item">
+        <div class="centaur-vs-label dim">The Exquisite Corpse</div>
+        <h2 class="centaur-vs-title dim">Chicken&#8209;truck&#8209;avocado.</h2>
+        <div class="centaur-vs-items">
+          <div class="centaur-vs-item dim">Amnesia deployment</div>
+          <div class="centaur-vs-item dim">Fragmented context</div>
+          <div class="centaur-vs-item dim">Accidental chimera</div>
+        </div>
+      </div>
+      <div class="centaur-fold-divider reveal-item"></div>
+      <div class="centaur-vs-block reveal-item">
+        <div class="centaur-vs-label lit">The Centaur</div>
+        <h2 class="centaur-vs-title lit">Intentionally designed.</h2>
+        <div class="centaur-vs-items">
+          <div class="centaur-vs-item lit">Compounding system</div>
+          <div class="centaur-vs-item lit">Knowledge backbone</div>
+          <div class="centaur-vs-item lit">Planned hybrid</div>
+        </div>
       </div>
     </div>
-    <div class="centaur-half centaur-right">
-      <div class="centaur-label">The Centaur</div>
-      <div class="centaur-headline">Intentionally designed.</div>
-      <div class="centaur-items">
-        <div class="centaur-item">Compounding system</div>
-        <div class="centaur-item">Knowledge backbone</div>
-        <div class="centaur-item">Planned hybrid</div>
-      </div>
-      <img src="images/centaur.png" alt="" class="centaur-bg-img" loading="lazy" aria-hidden="true">
+    <div class="centaur-img-col reveal-item">
+      <img src="images/centaur.png" alt="" loading="lazy" aria-hidden="true">
     </div>
   </div>
   <div class="centaur-payoff">
     <p class="centaur-payoff-text reveal">&ldquo;The centaur beats the chicken&#8209;truck&#8209;avocado every time. And the centaur was planned.&rdquo;</p>
   </div>
-</div>
+</section>
 
 <!-- TEAM -->
 <section class="section-lifted" id="team">
